@@ -12,7 +12,7 @@ public class RallyServerListener extends BuildServerAdapter {
 
     private static final Logger LOG = Logger.getInstance(RallyServerListener.class.getName());
 
-    public static final String PLUGIN_NAME = "RallyTeamCityIntegrator";
+    public static final String PLUGIN_NAME = "TeamCityRallyIntegrator";
 
     private final SBuildServer  myBuildServer;
     private final RallyManager  myManager;

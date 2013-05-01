@@ -23,11 +23,11 @@ public class RallySettingsController extends BaseFormXmlController implements Cu
 
     private static final Logger LOG = Logger.getInstance(RallySettingsController.class.getName());
 
-    public static final String PAGE_URL = "/plugins/RallyTeamCityIntegrator/editSettings.html";
+    public static final String PAGE_URL = "/plugins/TeamCityRallyIntegrator/editSettings.html";
     private static final String SETTINGS_BEAN_KEY = "settingsBean";
     private static final String FILE_NAME = "editSettings.jsp";
     private static final String TAB_TITLE = "Rally Integrator";
-    private static final String TAB_ID = "RallyTeamCityIntegrator";
+    private static final String TAB_ID = "TeamCityRallyIntegrator";
 
     private PluginDescriptor descriptor;
     private FileConfig myRallyIntegratorConfig;

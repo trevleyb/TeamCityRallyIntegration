@@ -16,7 +16,7 @@ public class FileConfig extends com.rally.integration.rally.RallyConfig implemen
 
     private static final Logger LOG = Logger.getInstance(FileConfig.class.getName());
 
-    public static final String CONFIG_FILENAME = "RallyTeamCityIntegrator.properties";
+    public static final String CONFIG_FILENAME = "TeamCityRallyIntegrator.properties";
 
     public static final int FILE_MONITOR_INTERVAL = 10;
     private static final String URL = "url";
