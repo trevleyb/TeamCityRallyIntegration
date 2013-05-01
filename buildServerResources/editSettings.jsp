@@ -49,6 +49,7 @@
         <span class="error" id="errorPassword"></span></td>
       </tr>
 
+      <!--
       <tr>
       <th><label disabled="true" for="proxyUsed">Use proxy: </label></th>
       <td><forms:checkbox  name="proxyUsed" disabled="true" value="true" checked="${settingsBean.proxyUsed}" onclick="Rally.SettingsForm.changeStatusProxy()"/></td>
@@ -69,15 +70,15 @@
       <th><label disabled="true" for="proxyPassword">Proxy password: </label></th>
       <td><forms:passwordField name="proxyPassword" encryptedPassword="${settingsBean.encryptedProxyPassword}" disabled="true"/></td>
       </tr>
-
+      -->
       <tr>
       <th><label for="testOnly">Test only: </label></th>
-      <td><forms:checkbox  name="testOnly" disabled="false" value="true" checked="${settingsBean.testOnly}"/></td>
+      <td><forms:checkbox  name="testOnly" disabled="false" checked="${settingsBean.testOnly}"/></td>
       </tr>
 
       <tr>
       <th><label for="createNotExist">Create BuildDef : </label></th>
-      <td><forms:checkbox  name="createNotExist" disabled="false" value="false" checked="${settingsBean.createNotExist}"/></td>
+      <td><forms:checkbox  name="createNotExist" disabled="false" checked="${settingsBean.createNotExist}"/></td>
       </tr>
 
       <tr>

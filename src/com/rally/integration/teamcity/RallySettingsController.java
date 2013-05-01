@@ -181,6 +181,7 @@ public class RallySettingsController extends BaseFormXmlController implements Cu
         if (!testConnector.isConnectionValid()) {
             return "Connection not valid.";
         }
+        testConnector.disconnect();
         return null;
     }
 

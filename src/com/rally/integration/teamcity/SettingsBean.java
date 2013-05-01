@@ -7,6 +7,7 @@ import jetbrains.buildServer.util.StringUtil;
 
 public class SettingsBean extends RememberState {
     private static final Logger LOG = Logger.getInstance(SettingsBean.class.getName());
+
     private String url;
     private String userName;
     private String password;
@@ -17,8 +18,7 @@ public class SettingsBean extends RememberState {
     private Boolean isTestOnly;
     private Boolean isCreateNotExist;
 
-    public SettingsBean() {
-    }
+    public SettingsBean() { }
 
     public SettingsBean(com.rally.integration.rally.RallyConfig cfg) {
         url = cfg.getUrl();

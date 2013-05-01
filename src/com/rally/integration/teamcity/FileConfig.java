@@ -43,8 +43,7 @@ public class FileConfig extends com.rally.integration.rally.RallyConfig implemen
         } else {
             load();
         }
-        LOG.info("Rally configuration file " + myConfigFile.getAbsolutePath() +
-                " will be monitored with interval " + FILE_MONITOR_INTERVAL + " seconds.");
+        LOG.info("Rally configuration file " + myConfigFile.getAbsolutePath() + " will be monitored with interval " + FILE_MONITOR_INTERVAL + " seconds.");
     }
 
     public FileConfig(SettingsBean bean) {
@@ -77,6 +76,7 @@ public class FileConfig extends com.rally.integration.rally.RallyConfig implemen
             proxyUser = prop.getProperty(PROXY_USER_NAME);
             final String proxyPass = prop.getProperty(PROXY_PASSWORD);
             proxyPassword = StringUtil.isEmptyOrSpaces(proxyPass) ? null : EncryptUtil.unscramble(proxyPass);
+            LOG.info(this.toString());
             LOG.info("\t...loading completed successfully.");
         } catch (Exception e) {
             throw new RuntimeException("Cannot load Rally config file: " + myConfigFile, e);
@@ -93,6 +93,7 @@ public class FileConfig extends com.rally.integration.rally.RallyConfig implemen
 
     public synchronized void save() {
         LOG.info("Saving configuration file: " + myConfigFile.getAbsolutePath());
+        LOG.info(this.toString());
         myChangeObserver.runActionWithDisabledObserver(new Runnable() {
 
             public void run() {

@@ -13,12 +13,12 @@
 <h2><a name="Overview"></a>Overview</h2>
 
 <p>The TeamCity to Rally Integrator is a Java Plugin for TeamCity which publishes build information to Rally. What this
-    means is that everytime a build is triggered in TeamCity the details of the build are published into Rally and are
+    means is that every time a build is triggered in TeamCity the details of the build are published into Rally and are
     visible in Rally.</p>
 
-<p>Why would you want to do this?</p>
+<p><b>Why would you want to do this?</b></p>
 <ul>
-    <li>It links up source code checkins with builds inside Rally.</li>
+    <li>It links up source code check-ins with builds inside Rally.</li>
     <li>You can view a story or defect in Rally and see what builds those changes are associated with.</li>
     <li>You can use the build metric facilities of Rally to report on you build metrics.</li>
     <li>If developers live in Rally build status is available in Rally.</li>
@@ -26,20 +26,24 @@
 
 <h2><a name="Installation"></a>Installation</h2>
 
-<p>Installation is quite simple and there is nothing you need to do inside Rally iterself.</p>
+<p>Installation is quite simple.</p>
 <ul>
-    <li>Download the TeamCity to Rally Integrator from GitHub.</li>
+    <li>Download the TeamCity to Rally Integrator from GitHub (TeamCityRallyIntegrator.zip).</li>
     <li>On your TeamCity server, copy the downloaded package (.zip file) into the "plugins" subdirectory located in your
         TeamCity Data directory. You can determine the Team City Data directory by viewing the Server Configuration
-        page.
+        page. It is normally <i>./BuildServer/Plugins</i>
     </li>
-    <li>Restart the TeamCity application server for the changes to take effect</li>
+    <li>Restart the TeamCity application server for the changes to take effect.</li>
     <li>Open a browser and navigate to your TeamCity URL</li>
     <li>Login as a TeamCity Administrator</li>
     <li>Navigate to the "Administration" page</li>
+    <li>There should be a <b>Rally Integrator</b> option on the left panel.</li>
     <li>Click on the Rally Integration Tab</li>
     <li>Complete the details on this page (note: the URL must start with HTTPS://)</li>
 </ul>
+</p>
+<a href='images/TeamCityRally-settings.jpg'><img src="images/TeamCityRally-settings.jpg" style="border: 0px solid black" /></a>
+</p>
 <table border="1">
     <tbody>
     <tr>
@@ -62,25 +66,6 @@
         <td> Password for the specified Username</td>
         <td> True</td>
     </tr>
-    <td> Use Proxy</td>
-    <td> Reserved for future use.</td>
-    <td> No, not currently in use.</td>
-    </tr>
-    <tr>
-        <td> Proxy URI</td>
-        <td> URL to proxy server</td>
-        <td> Reserved for future use.</td>
-    </tr>
-    <tr>
-        <td> Proxy user</td>
-        <td> Username for proxy server</td>
-        <td> Reserved for future use.</td>
-    </tr>
-    <tr>
-        <td> Proxy password</td>
-        <td> Password for proxy user</td>
-        <td> Reserved for future use.</td>
-    </tr>
     <tr>
         <td> Test Only</td>
         <td> If checked that builds are not created but details are logged to the log file.</td>
@@ -95,27 +80,30 @@
     </tr>
     </tbody>
 </table>
+</p>
 <p>At this stage the integrator is installed and active. If there are any issues, review the teamcity-rally.log in the
     Diagnostics/Logs page</p>
 
 <h2><a name="Configuration"></a>Configuration</h2>
 
 <p>To configure a build to connect to Rally, go to the build configuration settings for the build and setup the
-    following 3 custom properties</p>
-
+    following 4 custom properties</p>
+</p>
+<a href='images/TeamCityRally-project.jpg'><img src="images/TeamCityRally-project.jpg" style="border: 0px solid black" /></a>
+</p>
 <p>The sequence of steps that are initiated are as follows:</p>
 <ul>
     <li>A build is triggered in TeamCity. When it has completed it executes the Rally Integrator.</li>
-    <li>The intergator will first try to connect to Rally and will load Subscription and Workspace Information</li>
-    <li>The integrator will use the RallyWorkspace propoerty to find the workspace in the subscription.</li>
+    <li>The integrator will first try to connect to Rally and will load Subscription and Workspace Information.</li>
+    <li>The integrator will use the RallyWorkspace property to find the workspace in the subscription.</li>
     <li>It will then find a project within that workspace matching the RallyProject name.</li>
     <li>It will then look for a Build Definition that is in the project which matches the RallyBuildDef property. (If no
-        BuildDefinition is found and CreateNotExists is ticked then it will create a build definition.)
+        BuildDefinition is found and <b>CreateNotExists</b> is ticked then it will create a build definition.)
     </li>
-    <li>Once all data has been found it will parse the checkin data provided by TeamCity and attempt to find associated
-        checkins in Rally.
+    <li>Once all data has been found it will parse the check-in data provided by TeamCity (using the RallySSCM property as the SCM Repository ID)
+        and attempt to find associated check-ins in Rally.
     </li>
-    <li>It wiil then create a Build object in Rally using the data from TeamCity and the found Checkin references.</li>
+    <li>It will then create a Build object in Rally using the data from TeamCity and the found Check-in references.</li>
 </ul>
 <p>All steps and errors are reported in the teamcity-rally.log file which can be accessed via Diagnostics.</p>
 <table border="1">
@@ -137,15 +125,15 @@
     </tr>
     <tr>
         <td> RallyBuildDef</td>
-        <td> The name of the build definition for this build. (normaly this is "Default Build" unless renamed.</td>
-        <td> True</td>
+        <td> The name of the build definition for this build. (normaly this is "Default Build Definition" unless renamed.</td>
+        <td> Yes, this must be defined. If not defined no builds will be created in Rally.</td>
     </tr>
     <tr>
         <td> RallySCM</td>
         <td> The name given to the SCM repository for this build. This name is as it is configured in Rally. To check
             these, setup a custom grid viewing SCMRepository.
         </td>
-        <td> True</td>
+        <td> True if you want ChangeSets associated with a build. Leave blank and builds will be created without associated change set information.</td>
     </tr>
 
     </tbody>
@@ -177,8 +165,15 @@
 </code></pre>
 <h3>Rename your build definitions</h3>
 
-<p>In Rally all new projects automatically get a build definition created called "DEFAULT BUILD". You should add a
+<p>In Rally all new projects automatically get a build definition created called "DEFAULT BUILD DEFINITION". You should add a
     custom GRID in Rally and select BuildDefinition as the type to view in the grid and rename your build definitions to
     something meaningful. </p>
+</p>
+<a href='images/TeamCityRally-BuildGridSettings.jpg'><img src="images/TeamCityRally-BuildGridSettings.jpg" style="border: 0px solid black" /></a>
+</p>
+</p>
+<a href='images/TeamCityRally-BuildGrid.jpg'><img src="images/TeamCityRally-BuildGrid.jpg" style="border: 0px solid black" /></a>
+</p>
+
 </body>
 </html>

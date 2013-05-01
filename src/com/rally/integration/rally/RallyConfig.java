@@ -99,8 +99,7 @@ public class RallyConfig {
     @Override
     public String toString() {
         return "Config{" +
-                ", password='" + password + '\'' +
-                ", userName='" + userName + '\'' +
+                " userName='" + userName + '\'' +
                 ", url='" + url + '\'' +
                 ", useProxy='" + isProxyUsed + '\'' +
                 ", proxyUri='" + proxyUri + '\'' +
