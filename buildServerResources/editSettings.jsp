@@ -85,7 +85,7 @@
       <td>Ensure that you define RallyWorkspace,RallyProject and RallyBuildDef properties.</p>
        <b>RallyWorkspace</b> defines which workspace to find the buildDef. </p>
        <b>RallyProject</b> defines te project for the build def. If omitted, the first match will be used.</p>
-       <b>RallBuildDef</b> is the build def to assign the build to. If only RallyBuildDef is defined the first found match by name will be used.</p>
+       <b>RallyBuildDef</b> is the build def to assign the build to. If only RallyBuildDef is defined the first found match by name will be used.</p>
        <b>If <b>Create BuildDef</b> = <i>true</i> and you provide a Workspace, Project and Build name that does not exist, a build definition will be created.</td>
       </tr>
     </table>
