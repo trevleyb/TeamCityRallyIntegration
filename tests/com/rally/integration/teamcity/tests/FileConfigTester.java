@@ -1,13 +1,11 @@
 package com.rally.integration.teamcity.tests;
 
 import com.rally.integration.teamcity.FileConfig;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.regex.Pattern;
 
 
 public class FileConfigTester {

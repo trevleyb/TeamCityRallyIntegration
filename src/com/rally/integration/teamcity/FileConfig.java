@@ -14,21 +14,19 @@ import java.util.Properties;
 
 public class FileConfig extends com.rally.integration.rally.RallyConfig implements ChangeListener {
 
+    public static final String CONFIG_FILENAME = "TeamCityRallyIntegrator.properties";
+    public static final int FILE_MONITOR_INTERVAL = 10;
     private static final Logger LOG = Logger.getInstance(FileConfig.class.getName());
 
-    public static final String CONFIG_FILENAME = "TeamCityRallyIntegrator.properties";
-
-    public static final int FILE_MONITOR_INTERVAL = 10;
     private static final String URL = "url";
-    private static final String USER_NAME           = "userName";
-    private static final String PASSWORD            = "password";
-    private static final String USE_PROXY           = "useProxy";
-    private static final String PROXY_URI           = "proxyUri";
-    private static final String PROXY_USER_NAME     = "proxyUsername";
-    private static final String PROXY_PASSWORD      = "proxyPassword";
-    private static final String TEST_ONLY           = "testOnly";
-    private static final String CREATE_NOT_EXIST    = "createNotExist";
-
+    private static final String USER_NAME = "userName";
+    private static final String PASSWORD = "password";
+    private static final String USE_PROXY = "useProxy";
+    private static final String PROXY_URI = "proxyUri";
+    private static final String PROXY_USER_NAME = "proxyUsername";
+    private static final String PROXY_PASSWORD = "proxyPassword";
+    private static final String TEST_ONLY = "testOnly";
+    private static final String CREATE_NOT_EXIST = "createNotExist";
     private File myConfigFile;
     private FileWatcher myChangeObserver;
 
@@ -46,7 +44,7 @@ public class FileConfig extends com.rally.integration.rally.RallyConfig implemen
             load();
         }
         LOG.info("Rally configuration file " + myConfigFile.getAbsolutePath() +
-                 " will be monitored with interval " + FILE_MONITOR_INTERVAL + " seconds.");
+                " will be monitored with interval " + FILE_MONITOR_INTERVAL + " seconds.");
     }
 
     public FileConfig(SettingsBean bean) {

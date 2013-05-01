@@ -21,19 +21,17 @@ import java.util.Map;
 
 public class RallySettingsController extends BaseFormXmlController implements CustomTab {
 
-    private static final Logger LOG = Logger.getInstance(RallySettingsController.class.getName());
-
     public static final String PAGE_URL = "/plugins/TeamCityRallyIntegrator/editSettings.html";
+    private static final Logger LOG = Logger.getInstance(RallySettingsController.class.getName());
     private static final String SETTINGS_BEAN_KEY = "settingsBean";
     private static final String FILE_NAME = "editSettings.jsp";
     private static final String TAB_TITLE = "Rally Integrator";
     private static final String TAB_ID = "TeamCityRallyIntegrator";
-
+    protected final PagePlaces myPagePlaces;
     private PluginDescriptor descriptor;
     private FileConfig myRallyIntegratorConfig;
     private RallyConnector connector;
     private WebControllerManager webControllerManager;
-    protected final PagePlaces myPagePlaces;
     private PlaceId myPlaceId;
 
     public RallySettingsController(RallyConnector connector, PagePlaces places, WebControllerManager webControllerManager,
@@ -47,6 +45,26 @@ public class RallySettingsController extends BaseFormXmlController implements Cu
         this.myPlaceId = PlaceId.ADMIN_SERVER_CONFIGURATION_TAB;
 
         register();
+    }
+
+    private static void copySettings(SettingsBean bean, com.rally.integration.rally.RallyConfig target) {
+        target.setUrl(bean.getUrl());
+        target.setUserName(bean.getUserName());
+        target.setPassword(bean.getPassword());
+        target.setProxyUsed(getBooleanByString(bean.getProxyUsed().toString()));
+        target.setProxyUri(bean.getProxyUri());
+        target.setProxyUsername(bean.getProxyUsername());
+        target.setProxyPassword(bean.getProxyPassword());
+        target.setTestOnly(bean.getTestOnly());
+        target.setCreateNotExist(bean.getCreateNotExist());
+    }
+
+    private static Boolean getBooleanByString(String value) {
+        try {
+            return Boolean.parseBoolean(value);
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     protected void register() {
@@ -130,26 +148,6 @@ public class RallySettingsController extends BaseFormXmlController implements Cu
         }
     }
 
-    private static void copySettings(SettingsBean bean, com.rally.integration.rally.RallyConfig target) {
-        target.setUrl(bean.getUrl());
-        target.setUserName(bean.getUserName());
-        target.setPassword(bean.getPassword());
-        target.setProxyUsed(getBooleanByString(bean.getProxyUsed().toString()));
-        target.setProxyUri(bean.getProxyUri());
-        target.setProxyUsername(bean.getProxyUsername());
-        target.setProxyPassword(bean.getProxyPassword());
-        target.setTestOnly(bean.getTestOnly());
-        target.setCreateNotExist(bean.getCreateNotExist());
-    }
-
-    private static Boolean getBooleanByString(String value) {
-        try {
-            return Boolean.parseBoolean(value);
-        } catch (Exception ex) {
-            return false;
-        }
-    }
-
     public ActionErrors validate(SettingsBean bean) {
         ActionErrors errors = new ActionErrors();
         if (StringUtil.isEmptyOrSpaces(bean.getUrl())) {
@@ -177,7 +175,7 @@ public class RallySettingsController extends BaseFormXmlController implements Cu
         return errors;
     }
 
-    public String testSettings(SettingsBean bean)  {
+    public String testSettings(SettingsBean bean) {
         RallyConnector testConnector = createConnectorToRally(bean);
         testConnector.disconnect();
         if (!testConnector.isConnectionValid()) {
@@ -198,26 +196,43 @@ public class RallySettingsController extends BaseFormXmlController implements Cu
     }
 
     @NotNull
-    public String getTabId() { return TAB_ID; }
+    public String getTabId() {
+        return TAB_ID;
+    }
 
     @NotNull
-    public String getTabTitle() { return TAB_TITLE; }
+    public String getTabTitle() {
+        return TAB_TITLE;
+    }
 
     @NotNull
-    public String getIncludeUrl() { return PAGE_URL; }
+    public String getIncludeUrl() {
+        return PAGE_URL;
+    }
 
     @NotNull
-    public String getPluginName() { return RallyServerListener.PLUGIN_NAME; }
+    public String getPluginName() {
+        return RallyServerListener.PLUGIN_NAME;
+    }
 
     @NotNull
-    public List<String> getCssPaths() { return new ArrayList<String>(); }
+    public List<String> getCssPaths() {
+        return new ArrayList<String>();
+    }
 
     @NotNull
-    public List<String> getJsPaths() { return new ArrayList<String>(); }
+    public List<String> getJsPaths() {
+        return new ArrayList<String>();
+    }
 
-    public boolean isAvailable(@NotNull final HttpServletRequest request) { return true; }
+    public boolean isAvailable(@NotNull final HttpServletRequest request) {
+        return true;
+    }
 
-    public boolean isVisible() { return true;  }
+    public boolean isVisible() {
+        return true;
+    }
 
-    public void fillModel(@NotNull Map<String, Object> model, @NotNull HttpServletRequest request) { }
+    public void fillModel(@NotNull Map<String, Object> model, @NotNull HttpServletRequest request) {
+    }
 }

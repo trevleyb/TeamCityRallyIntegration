@@ -15,17 +15,17 @@ import java.util.List;
 public class RallySubscription {
 
     private static final Logger LOG = Logger.getInstance(RallyConnector.class.getName());
-
     List<RallyWorkspace> workspaceList;
     List<RallyRepository> repositories;
 
     public RallySubscription(JsonObject subscriptionData, JsonArray scmRepositories) throws Exception {
         workspaceList = BuildWorkspaceList(subscriptionData);
-        repositories  = BuildRepositoriesList(scmRepositories);
+        repositories = BuildRepositoriesList(scmRepositories);
     }
 
     /**
      * Searches for a RallyWorkspace object in the list and returns that object
+     *
      * @param workspaceName - the name of the workspace to find.
      * @return a RallyWorkspace object
      */
@@ -39,8 +39,9 @@ public class RallySubscription {
     /**
      * Given a workspace name and project name, this will return a RallyProject object which matches
      * the workspace and project names.
+     *
      * @param workspaceName - name of the workspace to find
-     * @param projectName - name of the project to find
+     * @param projectName   - name of the project to find
      * @return a RallyProject object
      */
     public RallyProject FindProject(String workspaceName, String projectName) {
@@ -52,6 +53,7 @@ public class RallySubscription {
     /**
      * Given a project name, this will find the first project that matches that name across all
      * workspaces. If there are duplicate project names then the first one found will be used.
+     *
      * @param projectName - the name of the project to find
      * @return a RallyProject object instance
      */
@@ -63,14 +65,14 @@ public class RallySubscription {
     }
 
     public RallyRepository FindRepository(String repositoryName) {
-        for (RallyRepository rp: repositories) {
+        for (RallyRepository rp : repositories) {
             if (rp.getName().compareToIgnoreCase(repositoryName) == 0) return rp;
         }
         return null;
     }
 
     public RallyBuildDef FindBuildDef(String workspaceName, String projectName, String buildDefName) {
-        RallyProject project = FindProject(workspaceName,projectName);
+        RallyProject project = FindProject(workspaceName, projectName);
         if (project != null) return project.Find(buildDefName);
         return null;
     }
@@ -88,7 +90,7 @@ public class RallySubscription {
     public RallyBuildDef FindBuildDef(String buildDefName) {
         for (RallyWorkspace ws : workspaceList) {
             for (RallyProject pj : ws.getProjects()) {
-                if (pj.Find(buildDefName)!= null) return pj.Find(buildDefName);
+                if (pj.Find(buildDefName) != null) return pj.Find(buildDefName);
             }
         }
         return null;
@@ -99,9 +101,9 @@ public class RallySubscription {
         List<RallyRepository> repositoryList = new ArrayList<RallyRepository>();
         try {
             for (JsonElement repository : repositories) {
-                String wsName = ((JsonObject)repository).get("Name").getAsString();
-                String wsRef  = ((JsonObject)repository).get("_ref").getAsString();
-                RallyRepository rp = new RallyRepository(wsName,wsRef);
+                String wsName = ((JsonObject) repository).get("Name").getAsString();
+                String wsRef = ((JsonObject) repository).get("_ref").getAsString();
+                RallyRepository rp = new RallyRepository(wsName, wsRef);
                 repositoryList.add(rp);
             }
             return repositoryList;
@@ -121,24 +123,24 @@ public class RallySubscription {
             for (JsonElement workspace : workspaces) {
 
                 // Create a Workspace Entry object and add it to the Dictionary
-                String wsName = ((JsonObject)workspace).get("Name").getAsString();
-                String wsRef  = ((JsonObject)workspace).get("_ref").getAsString();
-                RallyWorkspace ws = new RallyWorkspace(wsName,wsRef);
+                String wsName = ((JsonObject) workspace).get("Name").getAsString();
+                String wsRef = ((JsonObject) workspace).get("_ref").getAsString();
+                RallyWorkspace ws = new RallyWorkspace(wsName, wsRef);
                 workspaceList.add(ws);
 
                 // Next, scan through and find all the projects and project references
-                JsonArray projects = ((JsonObject)workspace).get("Projects").getAsJsonArray();
+                JsonArray projects = ((JsonObject) workspace).get("Projects").getAsJsonArray();
                 for (JsonElement project : projects) {
-                    String pjName = ((JsonObject)project).get("Name").getAsString();
-                    String pjRef  = ((JsonObject)project).get("_ref").getAsString();
-                    RallyProject pj = new RallyProject(pjName,pjRef, ws);
+                    String pjName = ((JsonObject) project).get("Name").getAsString();
+                    String pjRef = ((JsonObject) project).get("_ref").getAsString();
+                    RallyProject pj = new RallyProject(pjName, pjRef, ws);
                     ws.getProjects().add(pj);
 
                     // Next, scan through and find all the build definitions
-                    JsonArray buildDefs = ((JsonObject)project).get("BuildDefinitions").getAsJsonArray();
+                    JsonArray buildDefs = ((JsonObject) project).get("BuildDefinitions").getAsJsonArray();
                     for (JsonElement buildDef : buildDefs) {
-                        String bdName = ((JsonObject)buildDef).get("Name").getAsString();
-                        String bdRef  = ((JsonObject)buildDef).get("_ref").getAsString();
+                        String bdName = ((JsonObject) buildDef).get("Name").getAsString();
+                        String bdRef = ((JsonObject) buildDef).get("_ref").getAsString();
                         RallyBuildDef bd = new RallyBuildDef(bdName, bdRef, pj);
                         pj.getBuildDefs().add(bd);
                     }

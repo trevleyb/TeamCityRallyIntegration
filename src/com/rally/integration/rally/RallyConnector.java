@@ -25,14 +25,14 @@ import java.net.URISyntaxException;
 public class RallyConnector {
 
     private static final Logger LOG = Logger.getInstance(RallyConnector.class.getName());
-
     private static RallyRestApi rallyInstance = null;
     private static RallySubscription rallySubscription = null;
     protected com.rally.integration.rally.RallyConfig config;
 
-     /**
+    /**
      * Checks to see if there is a valid connection to Rally.
      * Can't just connect, must issue a query to validate the connection.
+     *
      * @return true if there is a valid connection to Rally, otherwise false.
      */
     public boolean isConnectionValid() {
@@ -46,6 +46,7 @@ public class RallyConnector {
 
     /**
      * Provides access to an instance of a connection to Rally.
+     *
      * @return RallyRestAPI instance and will create that instance if it does not exist.
      * @throws AuthenticationException
      * @throws URISyntaxException
@@ -63,6 +64,7 @@ public class RallyConnector {
     /**
      * Connects to rally, sets the instance variable to point to the new instance and returns
      * a instance of the connection object for further calls to Rally.
+     *
      * @return RallyRestAPI instance and will create that instance if it does not exist.
      * @throws AuthenticationException
      * @throws URISyntaxException
@@ -94,7 +96,7 @@ public class RallyConnector {
 
         LOG.info("Building subscription and SCM repository data.");
         try {
-            return new RallySubscription(getRallySubscription(),getSCMRepositories());
+            return new RallySubscription(getRallySubscription(), getSCMRepositories());
         } catch (Exception e) {
             LOG.error("Could not build Workspace and Projects list from Subscription data.");
             LOG.error(e);
@@ -144,7 +146,7 @@ public class RallyConnector {
             RallyRepository repository = getSubscription().FindRepository(scmName);
             if (repository != null) {
                 QueryRequest request = new QueryRequest("ChangeSet");
-                QueryFilter  filter  = new QueryFilter("SCMRepository","=",repository.getRef()).and(new QueryFilter("Revision","=",revision));
+                QueryFilter filter = new QueryFilter("SCMRepository", "=", repository.getRef()).and(new QueryFilter("Revision", "=", revision));
                 request.setFetch(new Fetch("Name,Revision"));
                 request.setQueryFilter(filter);
                 QueryResponse response = getRallyInstance().query(request);
@@ -213,17 +215,17 @@ public class RallyConnector {
 
     public void logErrors(String[] messages) {
         if (messages != null && messages.length > 0) {
-            for (int i=0; i<messages.length;i++) LOG.error(messages[i]);
+            for (int i = 0; i < messages.length; i++) LOG.error(messages[i]);
         }
     }
 
     public void logWarnings(String[] messages) {
         if (messages != null && messages.length > 0) {
-            for (int i=0; i<messages.length;i++) LOG.warn(messages[i]);
+            for (int i = 0; i < messages.length; i++) LOG.warn(messages[i]);
         }
     }
 
-    public void disconnect()  {
+    public void disconnect() {
         LOG.info("Disconnecting from Rally.");
         try {
             if (rallyInstance != null) rallyInstance.close();

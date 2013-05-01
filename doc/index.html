@@ -7,11 +7,15 @@
     <li><a href='#Overview'>Description</a></li>
     <li><a href='#Installation'>Installation</a></li>
     <li><a href='#Configuration'>Configuration</a>
-	<li><a href='#Recommendations'>Recommendations</a>
+    <li><a href='#Recommendations'>Recommendations</a>
 </ul>
 
 <h2><a name="Overview"></a>Overview</h2>
-<p>The TeamCity to Rally Integrator is a Java Plugin for TeamCity which publishes build information to Rally. What this means is that everytime a build is triggered in TeamCity the details of the build are published into Rally and are visible in Rally.</p>
+
+<p>The TeamCity to Rally Integrator is a Java Plugin for TeamCity which publishes build information to Rally. What this
+    means is that everytime a build is triggered in TeamCity the details of the build are published into Rally and are
+    visible in Rally.</p>
+
 <p>Why would you want to do this?</p>
 <ul>
     <li>It links up source code checkins with builds inside Rally.</li>
@@ -21,126 +25,160 @@
 </ul>
 
 <h2><a name="Installation"></a>Installation</h2>
+
 <p>Installation is quite simple and there is nothing you need to do inside Rally iterself.</p>
 <ul>
-<li>Download the TeamCity to Rally Integrator from GitHub.</li>
-<li>On your TeamCity server, copy the downloaded package (.zip file) into the "plugins" subdirectory located in your TeamCity Data directory. You can determine the Team City Data directory by viewing the Server Configuration page.</li>
-<li>Restart the TeamCity application server for the changes to take effect</li>
-<li>Open a browser and navigate to your TeamCity URL</li>
-<li>Login as a TeamCity Administrator</li>
-<li>Navigate to the "Administration" page</li>
-<li>Click on the Rally Integration Tab</li>
-<li>Complete the details on this page (note: the URL must start with HTTPS://)</li>
+    <li>Download the TeamCity to Rally Integrator from GitHub.</li>
+    <li>On your TeamCity server, copy the downloaded package (.zip file) into the "plugins" subdirectory located in your
+        TeamCity Data directory. You can determine the Team City Data directory by viewing the Server Configuration
+        page.
+    </li>
+    <li>Restart the TeamCity application server for the changes to take effect</li>
+    <li>Open a browser and navigate to your TeamCity URL</li>
+    <li>Login as a TeamCity Administrator</li>
+    <li>Navigate to the "Administration" page</li>
+    <li>Click on the Rally Integration Tab</li>
+    <li>Complete the details on this page (note: the URL must start with HTTPS://)</li>
 </ul>
-<table border="1"><tbody>
-<tr>
-<th > Parameter </th>
-<th > Description </th>
-<th > Required </th>
-</tr>
-<tr>
-<td > Server URL </td>
-<td > The Rally URL (must have HTTPS://). Normally https://rally1.rallydev.com </td>
-<td > True </td>
-</tr>
-<tr>
-<td > Username </td>
-<td > Valid Rally Username. </td>
-<td > True </td>
-</tr>
-<tr>
-<td > Password </td>
-<td > Password for the specified Username </td>
-<td > True </td>
-</tr>
-<td > Use Proxy </td>
-<td > Reserved for future use. </td>
-<td > No, not currently in use. </td>
-</tr>
-<tr>
-<td > Proxy URI </td>
-<td > URL to proxy server </td>
-<td > Reserved for future use.  </td>
-</tr>
-<tr>
-<td > Proxy user </td>
-<td > Username for proxy server </td>
-<td > Reserved for future use. </td>
-</tr>
-<tr>
-<td > Proxy password </td>
-<td > Password for proxy user </td>
-<td > Reserved for future use.  </td>
-</tr>
-<tr>
-<td > Test Only </td>
-<td > If checked that builds are not created but details are logged to the log file. </td>
-<td > No </td>
-</tr>
-<tr>
-<td > Create BuildDef </td>
-<td > If this is checked and you specify a build definition name that cannot be found then the intergator will create one for you automatically. </td>
-<td > No </td>
-</tr>
-</tbody></table>
-<p>At this stage the integrator is installed and active. If there are any issues, review the teamcity-rally.log in the Diagnostics/Logs page</p>
+<table border="1">
+    <tbody>
+    <tr>
+        <th> Parameter</th>
+        <th> Description</th>
+        <th> Required</th>
+    </tr>
+    <tr>
+        <td> Server URL</td>
+        <td> The Rally URL (must have HTTPS://). Normally https://rally1.rallydev.com</td>
+        <td> True</td>
+    </tr>
+    <tr>
+        <td> Username</td>
+        <td> Valid Rally Username.</td>
+        <td> True</td>
+    </tr>
+    <tr>
+        <td> Password</td>
+        <td> Password for the specified Username</td>
+        <td> True</td>
+    </tr>
+    <td> Use Proxy</td>
+    <td> Reserved for future use.</td>
+    <td> No, not currently in use.</td>
+    </tr>
+    <tr>
+        <td> Proxy URI</td>
+        <td> URL to proxy server</td>
+        <td> Reserved for future use.</td>
+    </tr>
+    <tr>
+        <td> Proxy user</td>
+        <td> Username for proxy server</td>
+        <td> Reserved for future use.</td>
+    </tr>
+    <tr>
+        <td> Proxy password</td>
+        <td> Password for proxy user</td>
+        <td> Reserved for future use.</td>
+    </tr>
+    <tr>
+        <td> Test Only</td>
+        <td> If checked that builds are not created but details are logged to the log file.</td>
+        <td> No</td>
+    </tr>
+    <tr>
+        <td> Create BuildDef</td>
+        <td> If this is checked and you specify a build definition name that cannot be found then the intergator will
+            create one for you automatically.
+        </td>
+        <td> No</td>
+    </tr>
+    </tbody>
+</table>
+<p>At this stage the integrator is installed and active. If there are any issues, review the teamcity-rally.log in the
+    Diagnostics/Logs page</p>
 
 <h2><a name="Configuration"></a>Configuration</h2>
-<p>To configure a build to connect to Rally, go to the build configuration settings for the build and setup the following 3 custom properties</p>
+
+<p>To configure a build to connect to Rally, go to the build configuration settings for the build and setup the
+    following 3 custom properties</p>
+
 <p>The sequence of steps that are initiated are as follows:</p>
 <ul>
     <li>A build is triggered in TeamCity. When it has completed it executes the Rally Integrator.</li>
     <li>The intergator will first try to connect to Rally and will load Subscription and Workspace Information</li>
-    <li>The integrator will use the RallyWorkspace propoerty to find the workspace in the subscription. </li>
+    <li>The integrator will use the RallyWorkspace propoerty to find the workspace in the subscription.</li>
     <li>It will then find a project within that workspace matching the RallyProject name.</li>
-    <li>It will then look for a Build Definition that is in the project which matches the RallyBuildDef property. (If no BuildDefinition is found and CreateNotExists is ticked then it will create a build definition.)</li>
-    <li>Once all data has been found it will parse the checkin data provided by TeamCity and attempt to find associated checkins in Rally. </li>
-    <li>It wiil then create a Build object in Rally using the data from TeamCity and the found Checkin references. </li>
+    <li>It will then look for a Build Definition that is in the project which matches the RallyBuildDef property. (If no
+        BuildDefinition is found and CreateNotExists is ticked then it will create a build definition.)
+    </li>
+    <li>Once all data has been found it will parse the checkin data provided by TeamCity and attempt to find associated
+        checkins in Rally.
+    </li>
+    <li>It wiil then create a Build object in Rally using the data from TeamCity and the found Checkin references.</li>
 </ul>
 <p>All steps and errors are reported in the teamcity-rally.log file which can be accessed via Diagnostics.</p>
-<table border="1"><tbody>
-<tr>
-<th > Parameter </th>
-<th > Description </th>
-<th > Required </th>
-</tr>
-<tr>
-<td > RallyWorkspace</td>
-<td > The textual name of the Workspace in Rally associated with this build. </td>
-<td > True </td>
-</tr>
-<tr>
-<td > RallyProject </td>
-<td > The name of the project folder for this build. </td>
-<td > True </td>
-</tr>
-<tr>
-<td > RallyBuildDef </td>
-<td > The name of the build definition for this build. (normaly this is "Default Build" unless renamed. </td>
-<td > True </td>
-</tr>
-</tbody></table>
+<table border="1">
+    <tbody>
+    <tr>
+        <th> Parameter</th>
+        <th> Description</th>
+        <th> Required</th>
+    </tr>
+    <tr>
+        <td> RallyWorkspace</td>
+        <td> The textual name of the Workspace in Rally associated with this build.</td>
+        <td> False, if not specified the first build def found by name will be used.</td>
+    </tr>
+    <tr>
+        <td> RallyProject</td>
+        <td> The name of the project folder for this build.</td>
+        <td> False, if not specified the first build def found by name will be used.</td>
+    </tr>
+    <tr>
+        <td> RallyBuildDef</td>
+        <td> The name of the build definition for this build. (normaly this is "Default Build" unless renamed.</td>
+        <td> True</td>
+    </tr>
+    <tr>
+        <td> RallySCM</td>
+        <td> The name given to the SCM repository for this build. This name is as it is configured in Rally. To check
+            these, setup a custom grid viewing SCMRepository.
+        </td>
+        <td> True</td>
+    </tr>
+
+    </tbody>
+</table>
 <h2><a name="Recommendations"></a>Recommendations</h2>
+
 <h3>Turn on logging</h3>
-<p>It is recommended that you turn on logging during the initial stages. You can turn on logging by modifying the teamcity-server-log4j.xml file found in the conf folder in your teamcity server.</p>
+
+<p>It is recommended that you turn on logging during the initial stages. You can turn on logging by modifying the
+    teamcity-server-log4j.xml file found in the conf folder in your teamcity server.</p>
+
 <p>Add a new APPENDER called "RALLY.LOG" as follows</p>
 <pre><code>
-  &lt;appender name="RALLY.LOG" class="jetbrains.buildServer.util.TCRollingFileAppender"&gt;
+    &lt;appender name="RALLY.LOG" class="jetbrains.buildServer.util.TCRollingFileAppender"&gt;
     &lt;param name="file" value="${teamcity_logs}teamcity-rally.log"/&gt;
 
     &lt;layout class="org.apache.log4j.PatternLayout">
-      &lt;param name="ConversionPattern" value="[%d] %6p - %30.30c - %m %n"/&gt;
+    &lt;param name="ConversionPattern" value="[%d] %6p - %30.30c - %m %n"/&gt;
     &lt;/layout&gt;
-  &lt;/appender&gt;
+    &lt;/appender&gt;
 </code></pre>
-<p>Add a new category as follows. You can set the priority from INFO to WARN or ERROR but start with INFO to help debugging any issues. </p>
+<p>Add a new category as follows. You can set the priority from INFO to WARN or ERROR but start with INFO to help
+    debugging any issues. </p>
 <pre><code>
-  &lt;category name="com.rally.integration" additivity="false"&gt;
+    &lt;category name="com.rally.integration" additivity="false"&gt;
     &lt;priority value="INFO"/&gt;
     &lt;appender-ref ref="RALLY.LOG"/&gt;
-  &lt;/category&gt;
+    &lt;/category&gt;
 </code></pre>
 <h3>Rename your build definitions</h3>
-<p>In Rally all new projects automatically get a build definition created called "DEFAULT BUILD". You should add a custom GRID in Rally and select BuildDefinition as the type to view in the grid and rename your build definitions to something meaningful. </p>
+
+<p>In Rally all new projects automatically get a build definition created called "DEFAULT BUILD". You should add a
+    custom GRID in Rally and select BuildDefinition as the type to view in the grid and rename your build definitions to
+    something meaningful. </p>
 </body>
 </html>

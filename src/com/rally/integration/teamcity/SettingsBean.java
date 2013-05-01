@@ -7,7 +7,6 @@ import jetbrains.buildServer.util.StringUtil;
 
 public class SettingsBean extends RememberState {
     private static final Logger LOG = Logger.getInstance(SettingsBean.class.getName());
-
     private String url;
     private String userName;
     private String password;
@@ -18,17 +17,18 @@ public class SettingsBean extends RememberState {
     private Boolean isTestOnly;
     private Boolean isCreateNotExist;
 
-    public SettingsBean() { }
+    public SettingsBean() {
+    }
 
     public SettingsBean(com.rally.integration.rally.RallyConfig cfg) {
-        url             = cfg.getUrl();
-        userName         = cfg.getUserName();
-        password         = cfg.getPassword();
-        isProxyUsed      = cfg.getProxyUsed();
-        proxyUri         = cfg.getProxyUri();
-        proxyUsername    = cfg.getProxyUser();
-        proxyPassword    = cfg.getProxyPassword();
-        isTestOnly       = cfg.getTestOnly();
+        url = cfg.getUrl();
+        userName = cfg.getUserName();
+        password = cfg.getPassword();
+        isProxyUsed = cfg.getProxyUsed();
+        proxyUri = cfg.getProxyUri();
+        proxyUsername = cfg.getProxyUser();
+        proxyPassword = cfg.getProxyPassword();
+        isTestOnly = cfg.getTestOnly();
         isCreateNotExist = cfg.getCreateNotExist();
     }
 
@@ -40,13 +40,13 @@ public class SettingsBean extends RememberState {
         return RSACipher.getHexEncodedPublicKey();
     }
 
-    public void setEncryptedPassword(String encrypted) {
-        password = RSACipher.decryptWebRequestData(encrypted);
-    }
-
     public String getEncryptedPassword() {
         if (!StringUtil.isEmptyOrSpaces(password)) return RSACipher.encryptDataForWeb(password);
         return "";
+    }
+
+    public void setEncryptedPassword(String encrypted) {
+        password = RSACipher.decryptWebRequestData(encrypted);
     }
 
     public String getUrl() {
@@ -105,14 +105,14 @@ public class SettingsBean extends RememberState {
         this.proxyUsername = proxyUsername;
     }
 
-    public void setEncryptedProxyPassword(String encrypted) {
-        proxyPassword = RSACipher.decryptWebRequestData(encrypted);
-    }
-
     public String getEncryptedProxyPassword() {
         if (!StringUtil.isEmptyOrSpaces(proxyPassword))
             return RSACipher.encryptDataForWeb(proxyPassword);
         return "";
+    }
+
+    public void setEncryptedProxyPassword(String encrypted) {
+        proxyPassword = RSACipher.decryptWebRequestData(encrypted);
     }
 
     public String getProxyPassword() {

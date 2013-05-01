@@ -12,42 +12,87 @@ public class RallyConfig {
     protected boolean isTestOnly;
     protected boolean isCreateNotExist;
 
-    public String getUrl() { return url; }
-    public void setUrl(String url) { this.url = url; }
+    public String getUrl() {
+        return url;
+    }
 
-    public String getUserName() { return userName; }
-    public void setUserName(String userName) { this.userName = userName; }
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public String getUserName() {
+        return userName;
+    }
 
-    public boolean getProxyUsed() { return isProxyUsed; }
-    public void setProxyUsed(Boolean proxyUsed) { isProxyUsed = proxyUsed; }
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
-    public boolean getTestOnly() { return isTestOnly; }
-    public void setTestOnly(Boolean testOnly) { isTestOnly = testOnly; }
+    public String getPassword() {
+        return password;
+    }
 
-    public boolean getCreateNotExist() { return isCreateNotExist; }
-    public void setCreateNotExist(Boolean createNotExist) { isCreateNotExist = createNotExist; }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-    public String getProxyUri() { return proxyUri; }
-    public void setProxyUri(String proxyUri) { this.proxyUri = proxyUri; }
+    public boolean getProxyUsed() {
+        return isProxyUsed;
+    }
 
-    public String getProxyUser() { return proxyUser; }
-    public void setProxyUsername(String proxyUser) { this.proxyUser = proxyUser; }
+    public void setProxyUsed(Boolean proxyUsed) {
+        isProxyUsed = proxyUsed;
+    }
 
-    public String getProxyPassword() { return proxyPassword; }
-    public void setProxyPassword(String proxyPassword) { this.proxyPassword = proxyPassword; }
+    public boolean getTestOnly() {
+        return isTestOnly;
+    }
+
+    public void setTestOnly(Boolean testOnly) {
+        isTestOnly = testOnly;
+    }
+
+    public boolean getCreateNotExist() {
+        return isCreateNotExist;
+    }
+
+    public void setCreateNotExist(Boolean createNotExist) {
+        isCreateNotExist = createNotExist;
+    }
+
+    public String getProxyUri() {
+        return proxyUri;
+    }
+
+    public void setProxyUri(String proxyUri) {
+        this.proxyUri = proxyUri;
+    }
+
+    public String getProxyUser() {
+        return proxyUser;
+    }
+
+    public void setProxyUsername(String proxyUser) {
+        this.proxyUser = proxyUser;
+    }
+
+    public String getProxyPassword() {
+        return proxyPassword;
+    }
+
+    public void setProxyPassword(String proxyPassword) {
+        this.proxyPassword = proxyPassword;
+    }
 
     public void setDefaults() {
-        url              = "https://rally1.rallydev.com/";
-        userName         = "trevor.leybourne@myob.com";
-        password         = "myob1234";
-        isProxyUsed      = false;
-        proxyUri         = "";
-        proxyUser        = "";
-        proxyPassword    = "";
-        isTestOnly       = true;
+        url = "https://rally1.rallydev.com/";
+        userName = "trevor.leybourne@myob.com";
+        password = "myob1234";
+        isProxyUsed = false;
+        proxyUri = "";
+        proxyUser = "";
+        proxyPassword = "";
+        isTestOnly = true;
         isCreateNotExist = false;
     }
 

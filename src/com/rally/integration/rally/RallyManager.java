@@ -16,19 +16,21 @@ import java.util.List;
  * of finding projects and workspaces and the creation, updates, deletions of objects in Rally.
  */
 public class RallyManager {
-    private static final Logger LOG = Logger.getInstance(RallyManager.class.getName());
-
     public final static int NOTIFY_SUCCESS = 0;
     public final static int NOTIFY_FAIL_CONNECTION = 1;
     public final static int NOTIFY_FAIL_INVALID_INFO = 3;
-
+    private static final Logger LOG = Logger.getInstance(RallyManager.class.getName());
     private final FileConfig config;
     private RallyConnector connector;
 
     public RallyManager(FileConfig config, RallyConnector connector) throws IOException {
-        this.config     = config;
-        this.connector  = connector;
+        this.config = config;
+        this.connector = connector;
         connector.setConnectionSettings(config);
+    }
+
+    public static boolean isNullOrBlank(String param) {
+        return param == null || param.trim().length() == 0;
     }
 
     // Called by the listener when a build has been completed.
@@ -47,10 +49,10 @@ public class RallyManager {
                 return NOTIFY_FAIL_INVALID_INFO;
             }
 
-            List<String> changeSets = GetChangeSets(buildInfo.getChangeSetIDs());
+            List<String> changeSets = GetChangeSets(buildInfo.GetProperty("RallySCM"), buildInfo.getChangeSetIDs());
             if (!config.isTestOnly) {
-               String ref = connector.Create("build", buildInfo.toJSON(getBuildDef(buildInfo),changeSets));
-               LOG.info("RallyManager.submitBuildRun: Created Build reference: " + ref);
+                String ref = connector.Create("build", buildInfo.toJSON(getBuildDef(buildInfo), changeSets));
+                LOG.info("RallyManager.submitBuildRun: Created Build reference: " + ref);
             } else {
                 LOG.info("RallyManager.submitBuildRun: Did not create Build reference. IsTestOnly=TRUE");
             }
@@ -63,19 +65,17 @@ public class RallyManager {
         return NOTIFY_SUCCESS;
     }
 
-    private List<String> GetChangeSets(List<String> changeSetIDs) {
-        if (changeSetIDs == null || changeSetIDs.size() == 0) {
-            LOG.info("No change set data was provided from Team City.");
+    private List<String> GetChangeSets(String prefix, List<String> changeSetIDs) {
+        LOG.info("RallySCM Prefix: " + prefix);
+        if (changeSetIDs == null || changeSetIDs.size() == 0 || isNullOrBlank(prefix)) {
+            LOG.info("No change set data was provided from Team City or no RallySCM Prefix");
             return null;
         }
 
         List<String> changeSets = new ArrayList<String>();
         for (String id : changeSetIDs) {
-            String[] scmParts = id.split(":");
-            if (scmParts.length == 2) {
-                String ref = connector.FindChangeSet(scmParts[0],scmParts[1]);
-                if (!isNullOrBlank(ref)) changeSets.add(ref);
-            }
+            String ref = connector.FindChangeSet(prefix, id);
+            if (!isNullOrBlank(ref)) changeSets.add(ref);
         }
         LOG.info("Found " + changeSets.size() + " change sets to associate.");
         return changeSets;
@@ -83,6 +83,7 @@ public class RallyManager {
 
     /**
      * Used for dumping debugging information to the LOG file.
+     *
      * @param buildInfo
      */
     private void DumpDebugInformation(RallyBuild buildInfo) {
@@ -100,7 +101,7 @@ public class RallyManager {
         LOG.info("BuildInfo: STATUS        =" + buildInfo.getTeamCityBuildInfo().getBuildStatus().toString());
         LOG.info("BuildInfo: NUMBER        =" + buildInfo.getTeamCityBuildInfo().getBuildNumber());
 
-        for (Iterator<SVcsModification> it = buildInfo.getBuildChanges().iterator(); it.hasNext();) {
+        for (Iterator<SVcsModification> it = buildInfo.getBuildChanges().iterator(); it.hasNext(); ) {
             SVcsModification mod = it.next();
             LOG.info("BuildInfo: MODIFICATIONS");
             LOG.info("BuildInfo: MODIFICATIONS DESC=" + mod.getDescription());
@@ -114,25 +115,25 @@ public class RallyManager {
             LOG.info("BuildInfo: MODIFICATIONS ROOTNAME=" + mod.getVcsRoot().getName());
             LOG.info("BuildInfo: MODIFICATIONS NAME=" + mod.getId());
         }
-        LOG.info("Change Set IDs: "+ buildInfo.getChangeSetIDs().toString());
+        LOG.info("Change Set IDs: " + buildInfo.getChangeSetIDs().toString());
     }
 
-    protected boolean isValidBuildInfo(RallyBuild buildInfo)  {
+    protected boolean isValidBuildInfo(RallyBuild buildInfo) {
         return getBuildDef(buildInfo) != null;
     }
 
-    protected RallyBuildDef getBuildDef(RallyBuild buildInfo)  {
+    protected RallyBuildDef getBuildDef(RallyBuild buildInfo) {
         try {
             String workspaceName = buildInfo.GetProperty("RallyWorkspace");
-            String projectName   = buildInfo.GetProperty("RallyProject");
-            String buildDefName  = buildInfo.GetProperty("RallyBuildDef");
+            String projectName = buildInfo.GetProperty("RallyProject");
+            String buildDefName = buildInfo.GetProperty("RallyBuildDef");
 
-            LOG.info("Build Details =" + buildInfo.getBuildName()+":"+buildInfo.getBuildID());
+            LOG.info("Build Details =" + buildInfo.getBuildName() + ":" + buildInfo.getBuildID());
             LOG.info("RallyWorkspace=" + workspaceName);
             LOG.info("RallyProject  =" + projectName);
             LOG.info("RallyBuildDef =" + buildDefName);
 
-            RallyBuildDef buildDef = getRallyBuildDef(buildInfo.getBuildName()+":"+buildInfo.getBuildID(), workspaceName, projectName, buildDefName);
+            RallyBuildDef buildDef = getRallyBuildDef(buildInfo.getBuildName() + ":" + buildInfo.getBuildID(), workspaceName, projectName, buildDefName);
             if (buildDef != null) LOG.info("Found a build definition: " + buildDef.getRef());
             if (buildDef == null) LOG.info("No suitable build definition was found.");
             return buildDef;
@@ -157,7 +158,7 @@ public class RallyManager {
         }
 
         if (!isNullOrBlank(workspaceName) && !isNullOrBlank(projectName) && isNullOrBlank(buildDefName)) {
-            RallyBuildDef buildDef = connector.getSubscription().FindProject(workspaceName,projectName).getBuildDefs().get(0);
+            RallyBuildDef buildDef = connector.getSubscription().FindProject(workspaceName, projectName).getBuildDefs().get(0);
             if (buildDef != null) return buildDef;
             LOG.warn("Build '" + buildID + "' does not have a default BuildDef.");
             return null;
@@ -178,13 +179,13 @@ public class RallyManager {
         // --------------------------------------------------------------------------------------------------
         if (buildDef == null && config.isCreateNotExist && !config.isTestOnly) {
             LOG.info("No build definition was found, creating one. ");
-            RallyProject project = connector.getSubscription().FindProject(workspaceName,projectName);
+            RallyProject project = connector.getSubscription().FindProject(workspaceName, projectName);
             if (project != null) {
 
                 // Create a new BuildDef object and store it in Rally. Then add it to the collection so
                 // subsequent builds will find this reference.
                 // ------------------------------------------------------------------------------------------
-                buildDef = new RallyBuildDef (buildDefName, null, project);
+                buildDef = new RallyBuildDef(buildDefName, null, project);
                 if (buildDef.toJson() != null) {
                     String ref = connector.Create("BuildDefinition", buildDef.toJson());
                     buildDef.setRef(ref);
@@ -195,10 +196,6 @@ public class RallyManager {
         }
         LOG.warn("Build '" + buildID + "'. Did not find a match in Rally to attribute this build to.");
         return null;
-    }
-
-    public static boolean isNullOrBlank(String param) {
-        return param == null || param.trim().length() == 0;
     }
 
 }

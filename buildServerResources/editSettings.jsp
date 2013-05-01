@@ -82,18 +82,16 @@
 
       <tr>
       <th>Note:</th>
-      <td>Ensure that you define RallyWorkspace,RallyProject and RallyBuildDef properties.</p>
+      <td>Ensure that you define RallyWorkspace,RallyProject,RallyBuildDef and RallySCM properties for each project. These properties are case sensitive.</p>
        <b>RallyWorkspace</b> defines which workspace to find the buildDef. </p>
        <b>RallyProject</b> defines te project for the build def. If omitted, the first match will be used.</p>
        <b>RallyBuildDef</b> is the build def to assign the build to. If only RallyBuildDef is defined the first found match by name will be used.</p>
-       <b>If <b>Create BuildDef</b> = <i>true</i> and you provide a Workspace, Project and Build name that does not exist, a build definition will be created.</td>
+       <b>RallySCM</b> is the key for the SCMRepository for change sets.</p>
+       If <b>Create BuildDef</b> = <i>true</i> and you provide a Workspace, Project and Build name that does not exist, a build definition will be created.</td>
       </tr>
     </table>
 
       <div class="saveButtonsBlock">
-        <!--
-            <a showdiscardchangesmessage='false' class="cancel" href="<c:url value='/admin/serverConfig.html'/>">Cancel</a>
-        -->
         <span class="error" id="errorInvalidCredentials"></span>
         <input class="btn btn_primary submitButton" class="submitButton" type="submit" value="Save">
         <input class="btn btn_primary submitButton" class="submitButton" id="testConnection" type="button" value="Test connection"/>

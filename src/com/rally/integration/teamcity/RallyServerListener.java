@@ -10,20 +10,18 @@ import java.io.IOException;
 
 public class RallyServerListener extends BuildServerAdapter {
 
-    private static final Logger LOG = Logger.getInstance(RallyServerListener.class.getName());
-
     public static final String PLUGIN_NAME = "TeamCityRallyIntegrator";
-
-    private final SBuildServer  myBuildServer;
-    private final RallyManager  myManager;
-    private final FileConfig    myConfig;
-    private final WebLinks      weblinks;
+    private static final Logger LOG = Logger.getInstance(RallyServerListener.class.getName());
+    private final SBuildServer myBuildServer;
+    private final RallyManager myManager;
+    private final FileConfig myConfig;
+    private final WebLinks weblinks;
 
     public RallyServerListener(SBuildServer server, WebLinks links, RallyConnector connector, ServerPaths serverPaths) throws IOException {
         myBuildServer = server;
-        weblinks      = links;
-        myConfig      = new FileConfig(serverPaths.getConfigDir());
-        myManager     = new RallyManager(myConfig, connector);
+        weblinks = links;
+        myConfig = new FileConfig(serverPaths.getConfigDir());
+        myManager = new RallyManager(myConfig, connector);
     }
 
     public void register() {

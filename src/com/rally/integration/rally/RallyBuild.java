@@ -34,31 +34,55 @@ public class RallyBuild {
         this.config = config;
     }
 
-    protected SRunningBuild getTeamCityBuildInfo() { return buildInfo; }
+    protected SRunningBuild getTeamCityBuildInfo() {
+        return buildInfo;
+    }
 
     //
     // Properties to return data from the Team City build information DTO
     //
-    public String getBuildName()   { return buildInfo.getFullName(); }
-    public String getBuildID()     { return buildInfo.getBuildNumber(); }
-    public String getStartTime()   { return isoFormat.format(buildInfo.getStartDate());}
-    public String getUrl()         { return webLinks.getViewResultsUrl(buildInfo);}
-    public String getStatus()      { return buildInfo.getBuildStatus().toString();}
-    public float  getDuration()    { return buildInfo.getElapsedTime(); }
-    public boolean isSuccessful(){ return buildInfo.getBuildStatus().isSuccessful(); }
-    public boolean isForced()    { return buildInfo.getTriggeredBy().isTriggeredByUser(); }
+    public String getBuildName() {
+        return buildInfo.getFullName();
+    }
+
+    public String getBuildID() {
+        return buildInfo.getBuildNumber();
+    }
+
+    public String getStartTime() {
+        return isoFormat.format(buildInfo.getStartDate());
+    }
+
+    public String getUrl() {
+        return webLinks.getViewResultsUrl(buildInfo);
+    }
+
+    public String getStatus() {
+        return buildInfo.getBuildStatus().toString();
+    }
+
+    public float getDuration() {
+        return buildInfo.getElapsedTime();
+    }
+
+    public boolean isSuccessful() {
+        return buildInfo.getBuildStatus().isSuccessful();
+    }
+
+    public boolean isForced() {
+        return buildInfo.getTriggeredBy().isTriggeredByUser();
+    }
 
     private String truncate(String string) {
         if (string == null) return "";
-        return (string.length() <= MESSAGE_SIZE) ? string : string.substring(string.length()-MESSAGE_SIZE, string.length());
+        return (string.length() <= MESSAGE_SIZE) ? string : string.substring(string.length() - MESSAGE_SIZE, string.length());
     }
 
     public List<String> getChangeSetIDs() {
         List<String> changeIDs = new ArrayList<String>();
-        if (getBuildChanges() != null && getBuildChanges().size() >0) {
+        if (getBuildChanges() != null && getBuildChanges().size() > 0) {
             for (SVcsModification s : getBuildChanges()) {
-                String id = s.getVcsRoot().getName() + ":" + s.getDisplayVersion();
-                changeIDs.add(id);
+                changeIDs.add(s.getDisplayVersion());
             }
         }
         return changeIDs;
@@ -72,6 +96,7 @@ public class RallyBuild {
     /**
      * Provides access to the Properties collection from the Build Server. Properties need to be defined to provide
      * information on where to place this build within Rally. Properties include the Workspace and Project.
+     *
      * @param name - the name of the Property to find
      * @return the value of the provided property
      * @throws InvalidParameterException if the propoerty oes not exist.
@@ -91,15 +116,15 @@ public class RallyBuild {
     public JsonObject toJSON(RallyBuildDef buildDef, List<String> changeSets) throws IOException {
         JsonObject obj = new JsonObject();
         obj.addProperty("workspace", buildDef.getWorkspace().getRef());
-        obj.addProperty("buildDefinition",buildDef.getRef());
-        obj.addProperty("duration",getDuration());
+        obj.addProperty("buildDefinition", buildDef.getRef());
+        obj.addProperty("duration", getDuration());
         obj.addProperty("message", getBuildName());
-        obj.addProperty("number",getBuildID());
-        obj.addProperty("start",getStartTime());
-        obj.addProperty("status",convertStatus(getStatus()));
+        obj.addProperty("number", getBuildID());
+        obj.addProperty("start", getStartTime());
+        obj.addProperty("status", convertStatus(getStatus()));
         obj.addProperty("uri", getUrl());
 
-        if (changeSets != null && changeSets.size() >0) {
+        if (changeSets != null && changeSets.size() > 0) {
             JsonArray changeSetList = new JsonArray();
             for (String id : changeSets) {
                 changeSetList.add(new JsonPrimitive(id));
