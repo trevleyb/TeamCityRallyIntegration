@@ -14,9 +14,13 @@ For a link with stories, work you will need to:
 3.	This should then trigger a TeamCity build (right)
 4.	When the build is finished the TeamCityRallyIntegrator is triggered. It will look at the check-ins associated with the build (as provided by TeamCity), find them in Rally, link them to the build record and create a build record. 
 
-To configure an individual build configuration to work with a project in Rally you need to create Build properties in TeamCity which point at Rally. There are three fields you need to create:
+To configure an individual build configuration to work with a project in Rally you need to create Build properties in TeamCity which point at Rally. 
 
-RallyWorkspace, RallyProject and RallyBuildDef. Each of these are simply the TEXTUAL names of the workspace, project and build def.  
+There are four properties you need to create:
+
+RallyWorkspace, RallyProject, RallyBuildDef and RallySCM. 
+
+Each of these are simply the TEXTUAL names of the workspace, project, build definition and SCMFRepository name as defined in Rally.  
 
 If these three properties do not exist then nothing will be created in Rally. Finally, you can turn on TEST ONLY mode (in settings) and can monitor everything through the log file without it doing anything in Rally. Also you can turn on CreateNotExist in the config which will create BuildDefinitions if they do not already exist. 
 
