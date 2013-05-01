@@ -1,0 +1,226 @@
+<project name="TeamCityPlugin" default="ccnet.build">
+
+    <tstamp>
+        <format property="build.timestamp" pattern="yymmddhhmm"/>
+    </tstamp>
+
+    <!-- Properties used in the build -->
+    <property name="base.dir" value="."/>
+    <property name="publish.dir" value="./_publish"/>
+    <property name="localDeploy.dir" value="/Users/Trevor/Public/BuildServer/plugins/"/>
+
+    <property name="ver.major" value="1"/>
+    <property name="ver.minor" value="1"/>
+    <property name="ver.build" value="${build.timestamp}"/>
+    <property name="build.version" value="${ver.major}.${ver.minor}.0"/>
+    <property name="jar.filename" value="TeamCityRallyIntegrator.jar"/>
+    <property name="zip.filename" value="TeamCityRallyIntegrator.zip"/>
+    <property name="source.zip.filename" value="TeamCityRallyIntegrator.Source.${build.version}.zip"/>
+
+    <property name="src.dir" value="src"/>
+    <property name="res.dir" value="buildServerResources"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="test.dir" value="tests"/>
+    <property name="doc.dir" value="doc"/>
+	
+    <property name="bin.dir" value="${base.dir}/out"/>
+    <property name="bin.product.dir" value="${bin.dir}/production/"/>
+    <property name="temp.binary.dir" value="${bin.dir}/binary_tmp/"/>
+    <property name="junit.output.dir" value="junit"/>
+
+    <!-- Compiler options -->
+    <property name="path.jar" value="${bin.product.dir}/${jar.filename}"/>
+    <property name="output.dir" value="${base.dir}/out/production"/>
+    <property name="testoutput.dir" value="${base.dir}/out/test"/>
+
+    <property name="compiler.debug" value="on"/>
+    <property name="compiler.generate.no.warnings" value="off"/>
+    <property name="compiler.args" value=""/>
+    <property name="compiler.max.memory" value="128m"/>
+    <property name="compiler.args" value="${compiler.args}"/>
+
+    <!-- Pattern Sets -->
+    <patternset id="ignored.files">
+        <exclude name="**/CVS/**"/>
+        <exclude name="**/SCCS/**"/>
+        <exclude name="**/RCS/**"/>
+        <exclude name="**/rcs/**"/>
+        <exclude name="**/.DS_Store/**"/>
+        <exclude name="**/.svn/**"/>
+        <exclude name="**/.sbas/**"/>
+        <exclude name="**/.IJI.*/**"/>
+        <exclude name="**/vssver.scc/**"/>
+        <exclude name="**/vssver2.scc/**"/>
+        <exclude name="**/.pyc/**"/>
+        <exclude name="**/.pyo/**"/>
+        <exclude name="**/*.pyc/**"/>
+        <exclude name="**/*.pyo/**"/>
+        <exclude name="**/.git/**"/>
+    </patternset>
+    <patternset id="compiler.resources">
+        <include name="**/?*.properties"/>
+        <include name="**/?*.xml"/>
+        <include name="**/?*.gif"/>
+        <include name="**/?*.png"/>
+        <include name="**/?*.jpeg"/>
+        <include name="**/?*.jpg"/>
+        <include name="**/?*.html"/>
+        <include name="**/?*.dtd"/>
+        <include name="**/?*.tld"/>
+        <include name="**/?*.jsp"/>
+        <include name="**/?*.js"/>
+        <include name="**/?*.css"/>
+    </patternset>
+    <patternset id="excluded.from.module">
+        <patternset refid="ignored.files"/>
+    </patternset>
+    <patternset id="excluded.from.compilation">
+        <patternset refid="excluded.from.module"/>
+    </patternset>
+
+    <!-- Project Libraries -->
+    <path id="library.classpath">
+        <fileset dir="${basedir}/lib/">
+            <include name="**/*.jar"/>
+        </fileset>
+
+    </path>
+    <path id="module.bootclasspath">
+    </path>
+    <path id="module.classpath">
+        <path refid="library.classpath"/>
+    </path>
+    <path id="runtime.module.classpath">
+        <pathelement location="${output.dir}"/>
+        <path refid="library.classpath"/>
+    </path>
+    <path id="module.sourcepath">
+        <dirset dir="${base.dir}">
+            <include name="${src.dir}"/>
+            <include name="${test.dir}"/>
+        </dirset>
+    </path>
+
+    <!-- Targets ====================================================================================== -->
+
+    <target name="all" depends="clean, j2ee.build" description="build all"/>
+
+    <target name="compile.modules" depends="compile.module.production,compile.module.tests"
+            description="Compile module server"/>
+
+    <target name="compile.module.production" description="Compile module server; production classes">
+        <mkdir dir="${output.dir}"/>
+        <javac target="1.5" destdir="${output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}"
+               memorymaximumsize="${compiler.max.memory}" fork="true">
+            <compilerarg line="${compiler.args}"/>
+            <bootclasspath refid="module.bootclasspath"/>
+            <classpath refid="module.classpath"/>
+            <src refid="module.sourcepath"/>
+            <patternset refid="excluded.from.compilation"/>
+        </javac>
+
+        <copy todir="${output.dir}">
+            <fileset dir="${base.dir}/${src.dir}">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+        </copy>
+        <copy todir="${output.dir}/${res.dir}">
+            <fileset dir="${base.dir}/${res.dir}">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="compile.module.tests" depends="compile.module.production"
+            description="compile module; test classes"/>
+
+    <target name="clean" description="cleanup module">
+        <delete dir="${bin.dir}"/>
+        <delete file="${path.jar}"/>
+    </target>
+
+    <target name="j2ee.build" depends="compile.modules">
+        <antcall target="build.jar">
+            <param name="j2ee.path.jar" value="${path.jar}"/>
+        </antcall>
+
+    </target>
+
+    <target name="build.jar">
+        <dirname property="jar.dir" file="${j2ee.path.jar}"/>
+        <mkdir dir="${jar.dir}"/>
+        <jar destfile="${path.jar}" duplicate="preserve">
+            <manifest>
+                <attribute name="Created-By" value=""/>
+                <attribute name="Manifest-Version" value="1.0"/>
+            </manifest>
+            <zipfileset dir="${output.dir}" prefix="">
+                <exclude name="**/tests/"/>
+            </zipfileset>
+        </jar>
+    </target>
+
+    <target name="package.init">
+        <mkdir dir="${temp.binary.dir}"/>
+        <delete file="${bin.product.dir}/${zip.filename}" quiet="true"/>
+        <delete file="${bin.product.dir}/${source.zip.filename}"/>
+    </target>
+
+    <target name="package.clean">
+        <delete dir="${temp.binary.dir}"/>
+    </target>
+
+    <target name="package.source">
+        <zip destfile="${publish.dir}/${source.zip.filename}">
+            <fileset dir="${base.dir}">
+                <include name="*.*"/>
+                <include name="TeamCityRallyIntegrator.xml"/>
+                <include name="teamcity-plugin.xml"/>
+                <include name="stripDTD.xsl"/>
+                <include name="src/**/*"/>
+                <include name="resources/**/*"/>
+                <include name="tests/**/*"/>
+                <include name="lib/**/*"/>
+                <include name="doc/**/*"/>
+            </fileset>
+        </zip>
+    </target>
+
+    <target name="package.binary">
+        <copy todir="${temp.binary.dir}">
+            <fileset dir="${bin.product.dir}" includes="*.jar"/>
+            <fileset file="lib/commons-codec-1.6.jar"/>
+            <fileset file="lib/commons-logging-1.1.1.jar"/>
+            <fileset file="lib/fluent-hc-4.2.1.jar"/>
+            <fileset file="lib/gson-2.1.jar"/>
+            <fileset file="lib/httpclient-4.2.1.jar"/>
+            <fileset file="lib/httpclient-cache-4.2.1.jar"/>
+            <fileset file="lib/httpcore-4.2.1.jar"/>
+            <fileset file="lib/httpmime-4.2.1.jar"/>
+            <fileset file="lib/rally-rest-api-1.0.6.jar"/>
+            <fileset file="teamcity-plugin.xml"/>
+            <fileset dir="." includes="${doc.dir}/**/*"/>
+        </copy>
+        <echo message="Replacing '@version@' on '${ver.build}' ."/>
+        <replace file="${temp.binary.dir}/teamcity-plugin.xml" value="${ver.build}">
+            <replacetoken><![CDATA[@version@]]></replacetoken>
+        </replace>
+        <zip destfile="${publish.dir}\${zip.filename}">
+            <fileset dir="${temp.binary.dir}"/>
+        </zip>
+    </target>
+
+    <target name="package" depends="package.init, package.source, package.binary, package.clean"/>
+
+    <target name="ccnet.build" depends="all, package"/>
+
+    <target name="localbuild" depends="ccnet.build, deploy"/>
+
+    <target name="clearall" depends="clean"/>
+
+    <target name="deploy" depends="">
+        <copy file="${publish.dir}\${zip.filename}" tofile="${localDeploy.dir}TeamCityRallyIntegrator.zip"/>
+    </target>
+</project>

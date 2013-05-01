@@ -1,0 +1,13 @@
+.editIntegratorSettingsPage {
+  width:50em;
+}
+
+table.runnerFormTable th {
+  width:230px;
+}
+
+table.runnerFormTable td input.textfield {
+  margin:0;
+  padding:0;
+  width:25em;
+}
