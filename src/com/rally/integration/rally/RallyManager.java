@@ -58,6 +58,7 @@ public class RallyManager {
             LOG.error("RallyManager.submitBuildRun: Could not create the Build reference.");
             LOG.error(e);
         }
+        connector.disconnect();
         LOG.info("RallyManager.submitBuildRun finished: " + buildInfo.getBuildID());
         return NOTIFY_SUCCESS;
     }
