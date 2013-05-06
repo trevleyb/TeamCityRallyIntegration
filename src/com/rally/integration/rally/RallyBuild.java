@@ -127,7 +127,9 @@ public class RallyBuild {
         if (changeSets != null && changeSets.size() > 0) {
             JsonArray changeSetList = new JsonArray();
             for (String id : changeSets) {
-                changeSetList.add(new JsonPrimitive(id));
+                JsonObject change = new JsonObject();
+                change.addProperty("_ref", id);
+                changeSetList.add(change);
             }
             obj.add("Changesets", changeSetList);
         }
@@ -138,12 +140,12 @@ public class RallyBuild {
         // Valid RALLY Status Codes are: [SUCCESS, FAILURE, INCOMPLETE, UNKNOWN, NO BUILDS]
         // TeamCity status codes are: ERROR, FAILURE, NORMAL, SUCCESS, UNKNOWN or WARNING
         LOG.info("TeamCity Status Code: " + status);
-        if (status.toUpperCase().equals("SUCCESS")) return "SUCCESS";
-        if (status.toUpperCase().equals("NORMAL")) return "SUCCESS";
-        if (status.toUpperCase().equals("FAILURE")) return "FAILURE";
-        if (status.toUpperCase().equals("ERROR")) return "FAILURE";
-        if (status.toUpperCase().equals("WARNING")) return "INCOMPLETE";
-        if (status.toUpperCase().equals("UNKNOWN")) return "UNKNOWN";
+        if (status.toUpperCase().equals("SUCCESS"))     return "SUCCESS";
+        if (status.toUpperCase().equals("NORMAL"))      return "SUCCESS";
+        if (status.toUpperCase().equals("FAILURE"))     return "FAILURE";
+        if (status.toUpperCase().equals("ERROR"))       return "FAILURE";
+        if (status.toUpperCase().equals("WARNING"))     return "INCOMPLETE";
+        if (status.toUpperCase().equals("UNKNOWN"))     return "UNKNOWN";
         return "UNKNOWN";
     }
 }

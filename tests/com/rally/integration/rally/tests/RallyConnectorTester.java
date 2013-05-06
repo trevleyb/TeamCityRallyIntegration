@@ -1,6 +1,7 @@
 package com.rally.integration.rally.tests;
 
-import com.google.gson.JsonObject;
+import com.google.gson.*;
+import com.rally.integration.rally.RallyBuild;
 import com.rally.integration.rally.RallyConfig;
 import com.rally.integration.rally.RallyConnector;
 import com.rally.integration.rally.RallyManager;
@@ -9,13 +10,20 @@ import com.rally.integration.rally.entities.RallyProject;
 import com.rally.integration.rally.entities.RallyWorkspace;
 import com.rally.integration.teamcity.FileConfig;
 import com.rally.integration.teamcity.SettingsBean;
+import com.rallydev.rest.request.QueryRequest;
+import com.rallydev.rest.response.QueryResponse;
+import com.rallydev.rest.util.Fetch;
+import com.rallydev.rest.util.QueryFilter;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 public class RallyConnectorTester {
 
@@ -49,7 +57,6 @@ public class RallyConnectorTester {
         RallyManager manager = new RallyManager(cfg,connector);
         RallyBuildDef def = manager.getRallyBuildDef("test","Enterprise Division (Play)","Memphis Payroll","Memphis Build");
         Assert.assertNotNull(def);
-
     }
 
 
@@ -80,7 +87,7 @@ public class RallyConnectorTester {
         cfg.setDefaults();
 
         RallyManager manager = new RallyManager(cfg,connector);
-        RallyBuildDef def = manager.getRallyBuildDef("test","Enterprise Division (Play)","Memphis Payroll","Memphis Build");
+        RallyBuildDef def = manager.getRallyBuildDef("test","Enterprise Division","Internal Projects","ArchieSync");
 
         DateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
 
@@ -90,35 +97,34 @@ public class RallyConnectorTester {
         obj.addProperty("Message", "Master 4683 Success");
         obj.addProperty("Start", isoFormat.format(new Date()));
         obj.addProperty("Status","SUCCESS");
-        obj.addProperty("Number","4683");
-        obj.addProperty("Uri", "http://jenkins-build:8080/hudson/view/master/job/master-deploy/4683/");
+        obj.addProperty("Number","4685");
+        obj.addProperty("Uri", "http://");
         obj.addProperty("BuildDefinition",def.getRef());
 
-        String ref = connector.Create("Build",obj);
-        Assert.assertNotNull(ref);
-        connector.Delete(ref, null);
-    }
+        try {
 
-    @Test
-    @Ignore("Require Rally server")
-    public void createDefectTest() throws Exception {
-        final RallyConnector connector = new RallyConnector();
-        FileConfig cfg = new FileConfig(new SettingsBean(new com.rally.integration.rally.RallyConfig()));
-        cfg.setDefaults();
+            JsonArray changeSetList = new JsonArray();
+            String id1 = connector.FindChangeSet("Comacc","5700");
+            JsonObject change1 = new JsonObject();
+            change1.addProperty("_ref", id1);
+            changeSetList.add(change1);
 
-        RallyManager manager = new RallyManager(cfg,connector);
-        RallyBuildDef def = manager.getRallyBuildDef("test","Enterprise Division (Play)","Memphis Payroll","Memphis Build");
+            String id2 = connector.FindChangeSet("Comacc","5696");
+            JsonObject change2 = new JsonObject();
+            change2.addProperty("_ref", id2);
+            changeSetList.add(change2);
 
-        JsonObject obj = new JsonObject();
-        obj.addProperty("workspace", def.getWorkspace().getRef());
-        obj.addProperty("ScheduleState","Backlog");
-        obj.addProperty("State","Submitted");
-        obj.addProperty("Name", "A defect");
-        obj.addProperty("Project",def.getParent().getRef());
+            obj.add("Changesets",changeSetList);
 
-        String ref = connector.Create("Defect",obj);
-        Assert.assertNotNull(ref);
-        connector.Delete(ref, null);
+            String ref = connector.Create("Build",obj);
+            JsonObject res1 = connector.Get(ref);
+
+
+            Assert.assertNotNull(ref);
+            connector.Delete(ref, null);
+        } catch (Exception e) {
+            String error = e.getMessage();
+        }
     }
 
 }

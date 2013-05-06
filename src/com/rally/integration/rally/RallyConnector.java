@@ -5,14 +5,8 @@ import com.google.gson.JsonObject;
 import com.intellij.openapi.diagnostic.Logger;
 import com.rally.integration.rally.entities.RallyRepository;
 import com.rallydev.rest.RallyRestApi;
-import com.rallydev.rest.request.CreateRequest;
-import com.rallydev.rest.request.DeleteRequest;
-import com.rallydev.rest.request.QueryRequest;
-import com.rallydev.rest.request.UpdateRequest;
-import com.rallydev.rest.response.CreateResponse;
-import com.rallydev.rest.response.DeleteResponse;
-import com.rallydev.rest.response.QueryResponse;
-import com.rallydev.rest.response.UpdateResponse;
+import com.rallydev.rest.request.*;
+import com.rallydev.rest.response.*;
 import com.rallydev.rest.util.Fetch;
 import com.rallydev.rest.util.QueryFilter;
 import jetbrains.buildServer.issueTracker.errors.ConnectionException;
@@ -196,6 +190,28 @@ public class RallyConnector {
         } catch (Exception e) {
             LOG.error("Could not update object: " + ref, e);
         }
+    }
+
+    public JsonObject Get(String ref) {
+        return Get(ref, null);
+    }
+
+    public JsonObject Get(String ref, String[] fields) {
+        LOG.info("Getting: " + ref);
+        try {
+            GetRequest request = new GetRequest(ref);
+            if (fields != null && fields.length > 0) request.setFetch(new Fetch(fields));
+            GetResponse response = getRallyInstance().get(request);
+            if (!response.wasSuccessful()) {
+                LOG.error("Could not get object: " + ref);
+                logErrors(response.getErrors());
+                logWarnings(response.getWarnings());
+            }
+            return response.getObject();
+        } catch (Exception e) {
+            LOG.error("Could not get object: " + ref, e);
+        }
+        return null;
     }
 
     public void Delete(String ref, JsonObject obj) {

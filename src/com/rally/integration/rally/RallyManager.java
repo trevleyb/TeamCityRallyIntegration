@@ -72,13 +72,22 @@ public class RallyManager {
             return null;
         }
 
-        List<String> changeSets = new ArrayList<String>();
+        ArrayList<String> changeSets = new ArrayList<String>();
         for (String id : changeSetIDs) {
             String ref = connector.FindChangeSet(prefix, id);
-            if (!isNullOrBlank(ref)) changeSets.add(ref);
+            if (!isNullOrBlank(ref) && IsUChangeSetUnique(ref,changeSetIDs) ) changeSets.add(ref);
         }
         LOG.info("Found " + changeSets.size() + " change sets to associate.");
         return changeSets;
+    }
+
+    /**
+     * Checks that the collections does not already contain the reference. Can't add the same reference
+     * twice.
+     */
+    private boolean IsUChangeSetUnique(String ref, List<String> changeSetIDs) {
+        for (String id : changeSetIDs) if (id.equals(ref)) return false;
+        return true;
     }
 
     /**
