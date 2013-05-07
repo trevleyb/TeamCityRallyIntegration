@@ -45,7 +45,7 @@ public class RallyManager {
 
             DumpDebugInformation(buildInfo);
             if (!isValidBuildInfo(buildInfo)) {
-                LOG.warn("RallyManager.submitBuildRun: No valid build info found to create a build reference. Skipped.");
+                LOG.info("RallyManager.submitBuildRun: No valid build info found to create a build reference. Skipped.");
                 return NOTIFY_FAIL_INVALID_INFO;
             }
 
@@ -148,6 +148,7 @@ public class RallyManager {
             return buildDef;
         } catch (Exception e) {
             LOG.warn("Build not setup for tracking. Build will be skipped.");
+            LOG.warn(e.getMessage());
         }
         return null;
     }
@@ -187,7 +188,7 @@ public class RallyManager {
         // Only create one if we didn't find one, the Create flag is true and Test is false
         // --------------------------------------------------------------------------------------------------
         if (buildDef == null && config.isCreateNotExist && !config.isTestOnly) {
-            LOG.info("No build definition was found, creating one. ");
+            LOG.info("Build '" + buildID + "'No build definition was found, creating one. ");
             RallyProject project = connector.getSubscription().FindProject(workspaceName, projectName);
             if (project != null) {
 
@@ -203,7 +204,7 @@ public class RallyManager {
                 }
             }
         }
-        LOG.warn("Build '" + buildID + "'. Did not find a match in Rally to attribute this build to.");
+        LOG.info("Build '" + buildID + "'. Did not find a match in Rally to attribute this build to.");
         return null;
     }
 

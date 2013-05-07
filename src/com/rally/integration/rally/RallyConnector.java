@@ -148,8 +148,8 @@ public class RallyConnector {
                     LOG.info("Found change set. Response Count=" + response.getTotalResultCount());
                     return response.getResults().get(0).getAsJsonObject().get("_ref").getAsString();
                 } else {
-                    LOG.warn("Could not obtain ChangeSet data for: " + scmName + " : " + revision);
-                    LOG.warn(response.getErrors().toString());
+                    LOG.info("Could not obtain ChangeSet data for: " + scmName + " : " + revision);
+                    LOG.info(response.getErrors().toString());
                 }
             }
         } catch (Exception e) {
