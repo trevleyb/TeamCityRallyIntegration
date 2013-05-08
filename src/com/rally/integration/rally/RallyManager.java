@@ -34,15 +34,20 @@ public class RallyManager {
     }
 
     // Called by the listener when a build has been completed.
-    public int submitBuildRun(RallyBuild buildInfo) {
 
+    public int submitBuildRun(RallyBuild buildInfo) {
+        if (!connector.isConnectionValid()) {
+            LOG.info("RallyManager.submitBuildRun: Failed to connect to Rally.");
+            return NOTIFY_FAIL_CONNECTION;
+        }
+        int result = doBuildRun(buildInfo);
+        connector.disconnect();
+        return result;
+    }
+
+    public int doBuildRun(RallyBuild buildInfo) {
         LOG.info("RallyManager.submitBuildRun called: " + buildInfo.getBuildID());
         try {
-            if (!connector.isConnectionValid()) {
-                LOG.info("RallyManager.submitBuildRun: Failed to connect to Rally.");
-                return NOTIFY_FAIL_CONNECTION;
-            }
-
             DumpDebugInformation(buildInfo);
             if (!isValidBuildInfo(buildInfo)) {
                 LOG.info("RallyManager.submitBuildRun: No valid build info found to create a build reference. Skipped.");
@@ -60,7 +65,6 @@ public class RallyManager {
             LOG.error("RallyManager.submitBuildRun: Could not create the Build reference.");
             LOG.error(e);
         }
-        connector.disconnect();
         LOG.info("RallyManager.submitBuildRun finished: " + buildInfo.getBuildID());
         return NOTIFY_SUCCESS;
     }
