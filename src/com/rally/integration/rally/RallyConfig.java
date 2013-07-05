@@ -86,8 +86,8 @@ public class RallyConfig {
 
     public void setDefaults() {
         url = "https://rally1.rallydev.com/";
-        userName = "trevor.leybourne@myob.com";
-        password = "myob1234";
+        userName = "user";
+        password = "password";
         isProxyUsed = false;
         proxyUri = "";
         proxyUser = "";

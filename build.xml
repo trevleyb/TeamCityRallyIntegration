@@ -7,7 +7,7 @@
     <!-- Properties used in the build -->
     <property name="base.dir" value="."/>
     <property name="publish.dir" value="./_publish"/>
-    <property name="localDeploy.dir" value="/Users/Trevor/Public/BuildServer/plugins/"/>
+    <property name="localDeploy.dir" value="./_publish/plugins/"/>
 
     <property name="ver.major" value="1"/>
     <property name="ver.minor" value="1"/>

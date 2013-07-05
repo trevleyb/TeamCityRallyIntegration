@@ -244,7 +244,9 @@ public class RallyConnector {
     public void disconnect() {
         LOG.info("Disconnecting from Rally.");
         try {
-            if (rallyInstance != null) rallyInstance.close();
+            if (rallyInstance != null) {
+                rallyInstance.close();
+            }
         } catch (Exception e) { /* ignore if there is an error. */ }
         rallyInstance = null;
         rallySubscription = null;

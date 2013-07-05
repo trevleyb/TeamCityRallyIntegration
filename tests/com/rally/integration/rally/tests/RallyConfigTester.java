@@ -11,8 +11,8 @@ import java.io.IOException;
 public class RallyConfigTester {
     //these need only for integration tests
     public static final String URL = "https://rally1.rallydev.com/";
-    public static final String USER_NAME = "trevor.leybourne@myob.com";
-    public static final String PASSWORD = "myob1234";
+    public static final String USER_NAME = "user";
+    public static final String PASSWORD = "password";
 
     @Test
     //@Ignore("Require Rally server")
