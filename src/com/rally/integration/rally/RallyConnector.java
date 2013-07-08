@@ -78,6 +78,7 @@ public class RallyConnector {
             instance.setWsapiVersion(new String("1.42"));
             instance.setApplicationName("TeamCity to Rally Integrator");
             instance.setApplicationVendor("OpenSource");
+            instance.setApplicationVersion("1.0");
             LOG.info("Connected: " + instance.getWsapiVersion());
             return instance;
         } catch (Exception e) {
